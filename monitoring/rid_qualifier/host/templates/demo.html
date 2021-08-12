@@ -1,0 +1,34 @@
+<p>This is a demo template.</p>
+
+{% extends 'base.html' %}
+{% block header %}
+<script>
+    var flight_data;
+    console.log('page loaded!');
+    // $(document).load(function() {
+        $.ajax({
+            type: 'GET',
+            url: '/flight-records',
+            // dataType: 'json',
+            success: function(data) {
+                console.log('data: ', data);
+                flight_data = data;
+            }
+        });
+    // });
+</script>
+{% endblock %}
+{% block body %}
+<div>
+    <p>Is this text coming?</p>
+    {{ flight_data.flight_records }}
+    {{flight_data.message}}
+    {% if flight_data and flight_data.flight_records %}
+        {% for file in flight_data.flight_records %}
+            <p>{{ file }}</p>
+        {% endfor %}
+    {% else %}
+        <p>{{ flight_data.message }}</p>
+    {% endif %}
+</div>
+{% endblock %}

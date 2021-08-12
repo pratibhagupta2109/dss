@@ -1,0 +1,28 @@
+<script>
+    $('#file-upload').on("change", function(e) {
+        var formData = new FormData();
+        $.each($("input[type='file']")[0].files, function(i, file) {
+            formData.append('files', file);
+        });
+        $.ajax({
+            type: "POST",
+            url: "/upload_file" ,
+            contentType: false,
+            processData: false,
+            cache: false,
+            enctype: 'multipart/form-data',
+            dataType: 'json',
+            data: formData,
+            success: function(response) {
+                console.log('file upload called');
+                console.log('upload file response: ', response);
+                $("#upload-updated").text = 'files updated';
+            }
+        })
+    });
+</script>
+<div>
+    <label class="btn btn-primary">
+        <i class="fa fa-image"></i> Browse<input id="file-upload" type="file" name="files" style="display: none;" multiple>
+    </label>
+</div>

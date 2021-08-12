@@ -1,0 +1,53 @@
+<script>
+    $('#file-upload').on("change", function(e) {
+        var formData = new FormData();
+        $.each($("input[type='file']")[0].files, function(i, file) {
+            formData.append('files', file);
+        });
+        $.ajax({
+            type: "POST",
+            url: "/upload_file" ,
+            contentType: false,
+            processData: false,
+            cache: false,
+            enctype: 'multipart/form-data',
+            dataType: 'json',
+            data: formData,
+            success: function(response) {
+                console.log('file upload called');
+                console.log('upload file response: ', response);
+            }
+        })
+    });
+    $('#file-upload-checkbox').click(function() {
+        var files_checked = $( "input:checked" );
+        if(files_checked.length > 0) {
+            console.log('selected');
+            selected_files = Object.values(files_checked).map(x=> x.value);
+            $('#test').text = 'test';
+        } else {
+            console.log('not selected');
+        }
+    });
+</script>
+<div>
+    <div>
+        <label class="btn btn-primary">
+            <i class="fa fa-image"></i> Add Flight Records<input id="file-upload" type="file" name="files" style="display: none;" multiple>
+        </label>
+    </div>
+    <div id="file-upload-checkbox">
+        {% if data and data.flight_records %}
+        {% for file in data.flight_records %}
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="{{file}}" name="filecheck" id="{{file}}">
+            <label class="form-check-label" for="{{file}}">
+                {{file}}
+            </label>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>{{ data.message }}</p>
+        {% endif %}
+    </div>
+</div>

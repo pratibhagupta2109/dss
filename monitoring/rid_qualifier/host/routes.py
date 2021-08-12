@@ -11,7 +11,7 @@ from . import tasks
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 import google.auth.transport.requests
-from flask import render_template, request, make_response, redirect, url_for, session
+from flask import render_template, request, make_response, redirect, url_for, session, jsonify
 from functools import wraps
 from pip._vendor import cachecontrol
 from werkzeug.exceptions import HTTPException
@@ -103,7 +103,7 @@ def start_background_task(user_config, auth_spec, input_files, debug):
 def execute_task():
     files = request.args['files']
     if not files:
-        return 'files not found.'
+        return {'error' :'files not found.'}
     files = files.split(',')
     form = forms.UserConfig(file_count=len(files))
     job_id = ''
@@ -122,8 +122,13 @@ def execute_task():
         data = {
             'job_id': job_id
         }
+    # return render_template(
+    #     'start_task.html',
+    #     title='Get User config',
+    #     form=form,
+    #     data=data)
     return render_template(
-        'start_task.html',
+        'user_specs.html',
         title='Get User config',
         form=form,
         data=data)
@@ -164,7 +169,7 @@ def get_report(job_id):
 @webapp.route('/upload_file', methods=['POST'])
 def upload_flight_state_files():
     """Upload files."""
-    files = request.files.getlist('files[]')
+    files = request.files.getlist('files')
     destination_file_paths = []
     folder_path = f'{config.Config.FILE_PATH}/user_name/flight_records'
     if not os.path.isdir(folder_path):
@@ -176,11 +181,38 @@ def upload_flight_state_files():
                 file_path = os.path.join(folder_path, filename)
                 file.save(file_path)
                 destination_file_paths.append(file_path)
-    return redirect(
-        url_for(
-            '.execute_task',
-            files=','.join(destination_file_paths)))
+    # return redirect(
+    #     url_for(
+    #         '.execute_task',
+    #         files=','.join(destination_file_paths)))
+    # return redirect(
+    #     url_for('.tests')
+    # )
+    # return render_template('flight_records.html')
+    return {'uploaded_files': [f.filename for f in files]}
 
+
+@webapp.route('/tests',  methods=['GET'])
+def tests():
+    return render_template('tests2.html', data=None)
+
+
+@webapp.route('/flight-records', methods=['POST'])
+def get_flight_records():
+    data = {
+        'flight_records': [],
+        'message': ''
+    }
+    folder_path = f'{config.Config.FILE_PATH}/user_name/flight_records'
+    if not os.path.isdir(folder_path):
+        data['message'] = 'Flight records not available.'
+    else:
+        flight_records = [f for f in os.listdir(folder_path) if f.endswith('.json')]
+        data['flight_records'] = flight_records
+    return render_template('flight_records.html', data=data)
+    # return render_template('tests2.html', flight_data=data)
+    return jsonify(data)
+    
 
 @webapp.route('/status')
 def status():

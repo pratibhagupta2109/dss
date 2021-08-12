@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <script>
+        var selected_files = '';
+        $(document).ready(function() {
+            $.ajax({
+                type: 'GET',
+                url: '/flight-records',
+                // dataType: 'json',
+                success: function(response) {
+                    $('#flight-records').html(response);
+                    // flight_data = data;
+                }
+            });
+            $.ajax({
+                type: 'GET',
+                url: '/executor',
+                // data: {
+                //     'files': 'dummyfile.json'
+                // },
+                success: function(response) {
+                    $('#user-spec').html(response);
+                }
+            });
+        });
+        
+        $("#accordionForm").validate({
+            rules: {
+                files: { required: true, minlength: 1 }
+            },
+            ignore: []
+        });
+
+        $('#accordionForm').on('submit', function() {
+         console.log('test form submitted');
+     });
+        
+    </script>
+    <div class="row">
+    <form id="accordionForm"action="">
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Select Flight Records
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div id="upload-updated" ></div>
+                    <fieldset>
+                        <div id="flight-records" class="accordion-body"></div>
+                    </fieldset>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Enter User Specifications
+                </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                    <div id="user-spec" class="accordion-body"></div>
+                </div>
+            </div>
+        </div>
+        <p><button type="submit">Run Test</button></p>
+    </form>
+    <div class="col">
+        Column
+    </div>
+    </div>
+{% endblock %}

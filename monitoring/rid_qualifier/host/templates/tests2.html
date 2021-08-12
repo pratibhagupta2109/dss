@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <script>
+        // var files_available = false;
+        // var flight_data;
+        var selected_files;
+        var data;
+        $(document).ready(function() {
+            $.ajax({
+                    type: 'POST',
+                    url: '/flight-records',
+                    // dataType: 'json',
+                    success: function(response) {
+                        $('#files').html(response);
+                        // $('#files').innerHTML = response;
+                        // flight_data = response;
+                        // alert(JSON.stringify(response));
+                    }
+                });
+        });
+        
+    </script>
+
+<div class="container">
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse1">Select Flight Records</a>
+          </h4>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse">
+            <div id="files">
+                
+            </div>
+            <div id="test"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
