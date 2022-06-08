@@ -17,8 +17,6 @@ This project will create the following environment:
 
 This application accepts Auth2 credentials for user-specific login. The process to authenticate using Auth2 is described (here)[/LOGIN.md]. If Auth2 credentials are not provided application uses `Local User` session by default.
 
--   Additionally, you need to bring up [rid mock instance](/monitoring/uss_qualifier/rid/mock/run_locally.sh) to produce a mock RID system to use with uss_qualifier. The instructions to bring up the rid mock instance can be found [here](/monitoring/uss_qualifier/mock/README.md).
-
 ### Input Files
 
 Accepted input files are, either valid flight records or KML files in the format mentioned [here](/monitoring/uss_qualifier/rid/README.md#Create-Flight-Record-from-KML).
